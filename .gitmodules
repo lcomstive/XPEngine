@@ -1,0 +1,3 @@
+[submodule "Engine/Dependencies/sokol"]
+	path = Engine/Dependencies/sokol
+	url = https://github.com/floooh/sokol

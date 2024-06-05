@@ -55,7 +55,7 @@ static void cleanup()
 
 sapp_desc sokol_main(int argc, char* argv[])
 {
-	return (sapp_desc)
+	return sapp_desc
 	{
 		.init_cb = init,
 		.frame_cb = frame,

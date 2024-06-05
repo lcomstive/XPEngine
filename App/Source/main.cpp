@@ -1,10 +1,18 @@
 #include <Engine/API.hpp>
 #include <stdio.h>
 
+#if !defined(ENGINE_PLATFORM_APPLE)
 #define SOKOL_IMPL
+#endif
 
 #if defined(ENGINE_PLATFORM_WEB)
 #define SOKOL_GLES3
+#elif defined(ENGINE_PLATFORM_WINDOWS)
+#define SOKOL_D3D11
+#elif defined(ENGINE_PLATFORM_APPLE)
+#define SOKOL_METAL
+#else
+#define SOKOL_GLCORE
 #endif
 
 #include <sokol_gfx.h>

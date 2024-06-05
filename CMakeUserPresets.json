@@ -6,11 +6,17 @@
 	},
 	"configurePresets": [
 		{
-			"name": "default",
+			"name": "web",
 			"displayName": "Emscripten",
 			"binaryDir": "build",
 			"generator": "Ninja Multi-Config",
 			"toolchainFile": "emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+		},
+		{
+			"name": "default",
+			"displayName": "Desktop",
+			"binaryDir": "build",
+			"generator": "Ninja Multi-Config"
 		}
 	],
 	"buildPresets": [

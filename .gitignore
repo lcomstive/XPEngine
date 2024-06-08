@@ -1,4 +1,11 @@
 [Bb]uild/
+
+# Emscripten
 emsdk/
 
+# Mac OS
 .DS_Store
+
+# IDEs
+.idea/
+.vs/

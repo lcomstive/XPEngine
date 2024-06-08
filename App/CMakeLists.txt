@@ -1,5 +1,8 @@
 project(App)
-enable_language(OBJC)
+
+if(APPLE)
+	enable_language(OBJC)
+endif()
 
 file(GLOB_RECURSE SOURCE_FILES Source/*.cpp)
 file(GLOB_RECURSE HEADER_FILES Include/*.hpp)
@@ -9,7 +12,12 @@ if(APPLE)
 	list(APPEND SOURCE_FILES ${OBJC_FILES})
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+if(NOT ANDROID)
+	add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+else()
+	add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES})
+	target_link_libraries(${PROJECT_NAME} AndroidAppGlue)
+endif()
 
 target_link_libraries(${PROJECT_NAME} XPEngine)
 
@@ -25,6 +33,6 @@ if(APPLE)
 		MACOSX_BUNDLE_EXECUTABLE_NAME ${PROJECT_NAME}
 		MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION_STRING_LONG}
 		MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_STRING}
-		MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
+		MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Apple.plist.in
 	)
 endif()

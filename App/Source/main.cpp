@@ -5,16 +5,6 @@
 #define SOKOL_IMPL
 #endif
 
-#if defined(ENGINE_PLATFORM_WEB)
-#define SOKOL_GLES3
-#elif defined(ENGINE_PLATFORM_WINDOWS)
-#define SOKOL_D3D11
-#elif defined(ENGINE_PLATFORM_APPLE)
-#define SOKOL_METAL
-#else
-#define SOKOL_GLCORE
-#endif
-
 #include <sokol_gfx.h>
 #include <sokol_app.h>
 #include <sokol_log.h>
@@ -39,7 +29,7 @@ static void init()
 
 static void frame()
 {
-	float g = pass_action.colors[0].clear_value.g + 0.01f;
+	float g = pass_action.colors[0].clear_value.g + 0.0025f;
 	pass_action.colors[0].clear_value.g = (g > 1.0f) ? 0.0f : g;
 
 	sg_pass pass = { .action = pass_action, .swapchain = sglue_swapchain() };

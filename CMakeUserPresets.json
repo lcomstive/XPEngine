@@ -17,6 +17,36 @@
 			"displayName": "Desktop",
 			"binaryDir": "build",
 			"generator": "Ninja Multi-Config"
+		},
+		{
+			"name": "iOS-sim",
+			"displayName": "iOS Simulator",
+			"binaryDir": "build",
+			"generator": "Xcode",
+			"cacheVariables": {
+				"CMAKE_SYSTEM_NAME": "iOS",
+				"CMAKE_OSX_SYSROOT": "iphonesimulator"
+			},
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Darwin"
+			}
+		},
+		{
+			"name": "iOS",
+			"displayName": "iOS",
+			"binaryDir": "build",
+			"generator": "Xcode",
+			"cacheVariables": {
+				"CMAKE_SYSTEM_NAME": "iOS",
+				"CMAKE_OSX_SYSROOT": "iphoneos"
+			},
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Darwin"
+			}
 		}
 	],
 	"buildPresets": [

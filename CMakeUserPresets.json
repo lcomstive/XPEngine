@@ -10,10 +10,10 @@
 			"displayName": "Emscripten",
 			"binaryDir": "build",
 			"generator": "Ninja Multi-Config",
-			"toolchainFile": "emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
+			"toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
 		},
 		{
-			"name": "default",
+			"name": "desktop",
 			"displayName": "Desktop",
 			"binaryDir": "build",
 			"generator": "Ninja Multi-Config"
@@ -52,12 +52,12 @@
 	"buildPresets": [
 		{
 			"name": "Debug",
-			"configurePreset": "default",
+			"configurePreset": "desktop",
 			"configuration": "Debug"
 		},
 		{
 			"name": "Release",
-			"configurePreset": "default",
+			"configurePreset": "desktop",
 			"configuration": "Release"
 		}
 	]

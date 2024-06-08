@@ -1,0 +1,121 @@
+name: XPApp
+
+on: [ push ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: 'Windows',
+            preset: 'desktop',
+            os: windows-latest,
+            generator: 'Visual Studio 17 2022'
+          }
+        - {
+            name: 'Linux',
+            preset: 'desktop',
+            os: ubuntu-latest,
+            generator: 'Ninja'
+          }
+        - {
+            name: 'MacOS',
+            preset: 'desktop',
+            os: macos-latest,
+            generator: 'Xcode'
+          }
+        - {
+            name: 'iOS',
+            preset: 'ios',
+            os: macos-latest,
+            generator: 'Xcode'
+          }
+        - {
+            name: 'iOS (Sim)',
+            preset: 'ios-sim',
+            os: macos-latest,
+            generator: 'Xcode'
+          }
+        - {
+            name: 'Web',
+            preset: 'web',
+            os: ubuntu-latest,
+            generator: 'Ninja'
+          }
+        - {
+            name: 'Android',
+            os: ubuntu-latest
+          }
+    steps:
+
+    # Clone repo
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+    
+    # Install prerequisites
+    - if: matrix.config.os == 'ubuntu-latest'
+      run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev xorg-dev zlib1g-dev ninja-build
+
+    - if: matrix.config.name == 'Web'
+      uses: mymindstorm/setup-emsdk@v14
+      with:
+        actions-cache-folder: 'emsdk-cache'
+
+    # Set CMake configuration based on branch
+    - if: github.ref == 'refs/heads/main' && matrix.config.os != 'windows-latest'
+      run: echo "CMAKE_CONFIG=Release" >> $GITHUB_ENV
+
+    - if: github.ref != 'refs/heads/main' && matrix.config.os != 'windows-latest'
+      run: echo "CMAKE_CONFIG=RelWithDebInfo" >> $GITHUB_ENV
+
+    - if: github.ref == 'refs/heads/main' && matrix.config.os != 'windows-latest'
+      run: echo "CMAKE_CONFIG=Release" >> $env:GITHUB_ENV
+
+    - if: github.ref != 'refs/heads/main' && matrix.config.os != 'windows-latest'
+      run: echo "CMAKE_CONFIG=RelWithDebInfo" >> $env:GITHUB_ENV
+
+    # Configure CMake
+    - name: Configure
+      if: matrix.config.name != 'Android'
+      run: cmake -B ${{ github.workspace }}/build -G "${{ matrix.config.generator }}" --preset "${{ matrix.config.preset }}" -DCMAKE_BUILD_TYPE=${{ env.CMAKE_CONFIG }}
+
+    # Build
+    - name: Build
+      if: matrix.config.name != 'Android'
+      run: cmake --build ${{ github.workspace }}/build --config ${{ env.CMAKE_CONFIG }}
+    
+    - name: Build (Android)
+      if: matrix.config.name == 'Android'
+      run: cd ${{ github.workspace }}/App/Platform/Android && chmod +x ./gradlew && ./gradlew build
+
+    # Read engine version from text file
+    - uses: juliangruber/read-file-action@v1
+      id: readFile
+      with:
+        path: ./Version.txt
+
+    # TODO: Create installation package.
+    #   - CPack for desktop installers (Windows, Mac OS, Linux)
+    #   - XCode for iOS .ipa generation and signing
+    #   - jarsigner+zipalign+apksigner for Android .apk signing (?)
+
+    # Upload generated artifacts
+    - uses: actions/upload-artifact@v4
+      if: matrix.config.name != 'Android'
+      with:
+        if-no-files-found: error
+        name: XPApp-${{ matrix.config.name }}-${{ steps.readFile.outputs.content }}-${{ github.ref_name }}
+        path: ${{ github.workspace }}/build/bin/${{ env.CMAKE_CONFIG }}/
+
+    - uses: actions/upload-artifact@v4
+      if: matrix.config.name == 'Android'
+      with:
+        if-no-files-found: error
+        name: XPApp-${{ matrix.config.name }}-${{ steps.readFile.outputs.content }}-${{ github.ref_name }}
+        path: ${{ github.workspace }}/App/Platform/Android/build/outputs/apk/*/*.apk

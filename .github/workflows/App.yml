@@ -28,14 +28,15 @@ jobs:
             os: macos-latest,
             generator: 'Xcode'
           }
+        # Need provisioning certificate and profile
+        # - {
+        #     name: 'iOS',
+        #     preset: 'ios',
+        #     os: macos-latest,
+        #     generator: 'Xcode'
+        #   }
         - {
-            name: 'iOS',
-            preset: 'ios',
-            os: macos-latest,
-            generator: 'Xcode'
-          }
-        - {
-            name: 'iOS (Sim)',
+            name: 'iOS-Sim',
             preset: 'ios-sim',
             os: macos-latest,
             generator: 'Xcode'
@@ -66,6 +67,11 @@ jobs:
       uses: mymindstorm/setup-emsdk@v14
       with:
         actions-cache-folder: 'emsdk-cache'
+
+    - if: matrix.config.name == 'Android'
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
 
     # Set CMake configuration based on branch
     - if: github.ref == 'refs/heads/main' && matrix.config.os != 'windows-latest'

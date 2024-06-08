@@ -19,7 +19,7 @@
 			"generator": "Ninja Multi-Config"
 		},
 		{
-			"name": "iOS-sim",
+			"name": "ios-sim",
 			"displayName": "iOS Simulator",
 			"binaryDir": "build",
 			"generator": "Xcode",
@@ -34,7 +34,7 @@
 			}
 		},
 		{
-			"name": "iOS",
+			"name": "ios",
 			"displayName": "iOS",
 			"binaryDir": "build",
 			"generator": "Xcode",

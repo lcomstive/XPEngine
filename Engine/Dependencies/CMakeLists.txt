@@ -24,7 +24,7 @@ endif()
 
 # Android
 if(ANDROID)
-	list(APPEND ENGINE_DEPENDENCY_LIBS android log egl)
+	list(APPEND ENGINE_DEPENDENCY_LIBS android log EGL)
 endif()
 
 # OpenGL

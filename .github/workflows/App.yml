@@ -71,6 +71,7 @@ jobs:
     - if: matrix.config.name == 'Android'
       uses: actions/setup-java@v4
       with:
+        distribution: 'temurin'
         java-version: '17'
 
     # Set CMake configuration based on branch

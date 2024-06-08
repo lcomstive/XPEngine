@@ -74,10 +74,10 @@ jobs:
     - if: github.ref != 'refs/heads/main' && matrix.config.os != 'windows-latest'
       run: echo "CMAKE_CONFIG=RelWithDebInfo" >> $GITHUB_ENV
 
-    - if: github.ref == 'refs/heads/main' && matrix.config.os != 'windows-latest'
+    - if: github.ref == 'refs/heads/main' && matrix.config.os == 'windows-latest'
       run: echo "CMAKE_CONFIG=Release" >> $env:GITHUB_ENV
 
-    - if: github.ref != 'refs/heads/main' && matrix.config.os != 'windows-latest'
+    - if: github.ref != 'refs/heads/main' && matrix.config.os == 'windows-latest'
       run: echo "CMAKE_CONFIG=RelWithDebInfo" >> $env:GITHUB_ENV
 
     # Configure CMake
@@ -92,7 +92,11 @@ jobs:
     
     - name: Build (Android)
       if: matrix.config.name == 'Android'
-      run: cd ${{ github.workspace }}/App/Platform/Android && chmod +x ./gradlew && ./gradlew build
+      run: |
+        cd ${{ github.workspace }}/App/Platform/Android
+        export JAVA_HOME=${{ env.JAVA_HOME_17_X64 }}
+        chmod +x ./gradlew
+        ./gradlew build
 
     # Read engine version from text file
     - uses: juliangruber/read-file-action@v1

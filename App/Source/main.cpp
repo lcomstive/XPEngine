@@ -35,7 +35,7 @@ static struct
 typedef struct
 {
 	float x, y, z;
-	int16_t u, v;
+	uint16_t u, v;
 } vertex_t;
 
 static void fetch_callback(const sfetch_response_t*);
@@ -144,8 +144,7 @@ static void init()
 	// Request texture
 	sfetch_request_t fetchRequest =
 	{
-		// .path = "Textures/baboon.png",
-		.path = "Textures/jano.jpg",
+		.path = "Assets/Textures/jano.jpg",
 		.callback = fetch_callback,
 		.buffer = SFETCH_RANGE(state.file_buffer)
 	};

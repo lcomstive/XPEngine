@@ -26,7 +26,11 @@ add_dependencies(${PROJECT_NAME} AppShaders)
 target_link_libraries(${PROJECT_NAME} XPEngine)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ShaderCache)
 
+set(APP_RESOURCES_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
 if(APPLE)
+	set(APP_RESOURCES_DIR ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.app/Contents/Resources)
+
 	# Configure Mac OS app bundle
 	set_target_properties(
 		${PROJECT_NAME} PROPERTIES
@@ -45,6 +49,15 @@ endif()
 if(ENGINE_WEB_PLATFORM)
 	set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
 endif()
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND echo Copying assets to output folder
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		${CMAKE_CURRENT_SOURCE_DIR}/Assets ${APP_RESOURCES_DIR}/Assets
+
+	# Shaders are compiled into the source code, don't need raw shaders copied
+	COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_RESOURCES_DIR}/Assets/Shaders
+)
 
 # Group source files inside IDE
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/Source"  PREFIX "Source" FILES ${SOURCE_FILES})

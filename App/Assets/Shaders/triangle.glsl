@@ -1,5 +1,5 @@
 @vs vs
-in vec3 position;
+in vec4 position;
 in vec4 colour0;
 
 out vec4 colour;

@@ -2,6 +2,12 @@ name: XPApp
 
 on: [ push ]
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build:
     name: ${{ matrix.config.name }}
@@ -130,3 +136,19 @@ jobs:
         if-no-files-found: error
         name: XPApp-${{ matrix.config.name }}-${{ steps.readFile.outputs.content }}-${{ github.ref_name }}
         path: ${{ github.workspace }}/App/Platform/Android/build/outputs/apk/*/*.apk
+
+    # Publish to GitHub Pages
+    - if: matrix.config.name == 'Web'
+      name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - if: matrix.config.name == 'Web'
+      name: Upload Pages Artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ github.workspace }}/build/bin/${{ env.CMAKE_CONFIG }}/
+    
+    - if: matrix.config.name == 'Web'
+      name: Deploy to Pages
+      id: pages-deployment
+      uses: actions/deploy-pages@v4

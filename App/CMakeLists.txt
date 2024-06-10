@@ -54,6 +54,10 @@ if(APPLE)
 	)
 endif()
 
+if(ENGINE_WEB_PLATFORM)
+	set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
+endif()
+
 # Group source files inside IDE
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/Source"  PREFIX "Source" FILES ${SOURCE_FILES})
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/Include" PREFIX "Include" FILES ${INCLUDE_FILES})

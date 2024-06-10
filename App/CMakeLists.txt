@@ -1,16 +1,4 @@
-# Shader Compilation
-project(AppShaders)
-
-file(GLOB_RECURSE SHADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Assets/Shaders/*.glsl)
-
-string(REGEX REPLACE "[.]glsl$" ".h" SHADER_HEADERS ${SHADER_FILES})
-string(REGEX REPLACE "Assets/Shaders" "ShaderCache/Shaders" SHADER_HEADERS ${SHADER_HEADERS})
-
-if(WIN32)
-	add_custom_target(${PROJECT_NAME} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/Platform/CompileShaders.bat BYPRODUCTS ${SHADER_HEADERS})
-else()
-	add_custom_target(${PROJECT_NAME} COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/Platform/CompileShaders.sh BYPRODUCTS ${SHADER_HEADERS})
-endif()
+include(./Platform/CompileShaders.cmake)
 
 # Application
 project(App)

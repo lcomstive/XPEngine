@@ -1,3 +1,18 @@
+# Shader Compilation
+project(AppShaders)
+
+file(GLOB_RECURSE SHADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/Assets/Shaders/*.glsl)
+
+if(WIN32)
+	add_custom_target(${PROJECT_NAME} COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/Platform/CompileShaders.bat)
+else()
+	add_custom_target(${PROJECT_NAME} COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/Platform/CompileShaders.sh)
+endif()
+
+string(REGEX REPLACE "[.]glsl$" ".h" SHADER_HEADERS ${SHADER_FILES})
+string(REGEX REPLACE "Assets/Shaders" "ShaderCache/Shaders" SHADER_HEADERS ${SHADER_HEADERS})
+
+# Application
 project(App)
 
 if(APPLE)
@@ -13,12 +28,13 @@ if(APPLE)
 endif()
 
 if(NOT ANDROID)
-	add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+	add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${SHADER_HEADERS} ${SHADER_FILES})
 else()
-	add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES})
+	add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${HEADER_FILES} ${SHADER_HEADERS} ${SHADER_FILES})
 	target_link_libraries(${PROJECT_NAME} AndroidAppGlue)
 endif()
 
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/ShaderCache)
 target_link_libraries(${PROJECT_NAME} XPEngine)
 
 if(APPLE)
@@ -36,3 +52,9 @@ if(APPLE)
 		MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Platform/Apple.plist.in
 	)
 endif()
+
+# Group source files inside IDE
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/Source"  PREFIX "Source" FILES ${SOURCE_FILES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/Include" PREFIX "Include" FILES ${INCLUDE_FILES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Shaders" PREFIX "Shaders" FILES ${SHADER_FILES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/ShaderCache/Shaders" PREFIX "Shaders/Cached" FILES ${SHADER_HEADERS})

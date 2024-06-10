@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=$(dirname "$0")
+DIR=$(dirname "$0")/..
 UNAME=$(uname -s)
 ARCH=$(uname -m)
 SHADER_LANGS=glsl430:glsl300es:hlsl5:metal_macos:metal_ios:metal_sim
